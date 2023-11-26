@@ -9,6 +9,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
 
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <VBox
   alignment="CENTER"
   spacing="20.0"
@@ -24,4 +27,21 @@
 
   <Label fx:id="mainTitle" text="Hello world!"/>
   <Label text="This is a simple demo application."/>
+
+  <VBox spacing="10">
+    <padding>
+      <Insets top="10" bottom="10" left="10" right="10"/>
+    </padding>
+    <Button>1</Button>
+    <Button>2</Button>
+    <Button>3</Button>
+    <Button>4</Button>
+  </VBox>
+
+  <StackPane>
+    <ImageView>
+      <Image url="./image.png"/>
+    </ImageView>
+    <Button>Click Me!</Button>
+  </StackPane>
 </VBox>
