@@ -10,11 +10,14 @@ import javafx.scene.layout.VBox;
 public class WeatherApp {
     private final WeatherService weatherService;
     private final VBox mainPane;
-    private final Label resultLabel = new Label();;
+    private final Label resultLabel = new Label();
     private final ImageView weatherIcon = new ImageView();
+    private final ComboBox<String> timeOfDayComboBox;
+    private ToggleGroup unitToggleGroup;
 
     public WeatherApp() {
         this.weatherService = new WeatherService();
+        this.timeOfDayComboBox = createTimeOfDayComboBox();
         this.mainPane = createMainPane();
     }
 
@@ -30,47 +33,53 @@ public class WeatherApp {
         Button getWeatherButton = new Button("Узнать погоду");
         getWeatherButton.setOnAction(e -> {
             String city = cityField.getText();
-            String unit = getSelectedUnit(unitBox);
+            String unit = getSelectedUnit();
+            String timeOfDay = timeOfDayComboBox.getValue();
             try {
                 WeatherData weatherData = weatherService.getWeather(city, unit);
-                updateWeatherInfo(weatherData);
-            }
-            catch(Exception a) {
-                resultLabel.setText("Такой город был не найден!");
+                updateWeatherInfo(weatherData, timeOfDay);
+            } catch (Exception a) {
+                resultLabel.setText("Такой город не был найден!");
             }
         });
 
-        pane.getChildren().addAll(cityLabel, cityField, unitBox, getWeatherButton, resultLabel, weatherIcon);
+        pane.getChildren().addAll(cityLabel, cityField, unitBox, timeOfDayComboBox, getWeatherButton, resultLabel, weatherIcon);
         return pane;
+    }
+
+    private ComboBox<String> createTimeOfDayComboBox() {
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll("Утро", "День", "Вечер", "Ночь");
+        comboBox.setValue("День");
+        return comboBox;
     }
 
     private HBox createUnitToggleGroup() {
         HBox unitBox = new HBox(10);
 
-        ToggleGroup toggleGroup = new ToggleGroup();
+        unitToggleGroup = new ToggleGroup();
 
-        RadioButton celsiusButton = new RadioButton("°C");
-        celsiusButton.setToggleGroup(toggleGroup);
+        ToggleButton celsiusButton = new ToggleButton("°C");
+        celsiusButton.setToggleGroup(unitToggleGroup);
         celsiusButton.setSelected(true);
         celsiusButton.setUserData("metric");
 
-        RadioButton fahrenheitButton = new RadioButton("°F");
-        fahrenheitButton.setToggleGroup(toggleGroup);
+        ToggleButton fahrenheitButton = new ToggleButton("°F");
+        fahrenheitButton.setToggleGroup(unitToggleGroup);
         fahrenheitButton.setUserData("imperial");
 
         unitBox.getChildren().addAll(new Label("Единицы измерения:"), celsiusButton, fahrenheitButton);
-
         return unitBox;
     }
 
-    private String getSelectedUnit(HBox unitBox) {
-        ToggleGroup toggleGroup = (ToggleGroup) ((RadioButton) unitBox.getChildren().get(1)).getToggleGroup();
-        RadioButton selectedRadioButton = (RadioButton) toggleGroup.getSelectedToggle();
-        return selectedRadioButton.getUserData().toString();
+    private String getSelectedUnit() {
+        ToggleButton selectedToggleButton = (ToggleButton) unitToggleGroup.getSelectedToggle();
+        return selectedToggleButton.getUserData().toString();
     }
 
-    private void updateWeatherInfo(WeatherData weatherData) {
-        resultLabel.setText("Текущая погода в " + weatherData.getCity() + ": " + weatherData.getTemperature());
+    private void updateWeatherInfo(WeatherData weatherData, String timeOfDay) {
+        resultLabel.setText("Текущая погода в " + weatherData.getCity() +
+                " (" + timeOfDay + "): " + weatherData.getTemperature());
         weatherIcon.setImage(new Image(weatherData.getIconUrl()));
     }
 

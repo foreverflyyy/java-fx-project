@@ -1,44 +1,53 @@
 package com.example.javafxproject;
-import java.util.Random;
 import java.net.URL;
 import java.net.URLConnection;
-import javafx.fxml.FXML;
 import org.json.JSONObject;
-import java.util.ResourceBundle;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.List;
 
 
 public class WeatherService {
     public WeatherData getWeather(String city, String unit) {
-        JSONObject out= new JSONObject(getData("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=614674e366d17b482963b1fd4aef410b&units=metric"));
-        String iconUrl = generateRandomIconUrl();
-        JSONObject obj = out.getJSONObject("main");
-        Double temperature = obj.getDouble("temp");
-        return new WeatherData(city, temperature, iconUrl);
-    }
+        Double tempInCelsius = getTempByCity(city);
+        String iconUrl = getIconUrlByCity(city);
 
-    private String generateRandomTemperature(String unit) {
-        Random random = new Random();
-        int temperatureCelsius = random.nextInt(40) - 10; // Генерируем случайную температуру от -10 до 30 градусов Цельсия
-
+        String temp;
         if ("imperial".equals(unit)) {
-            // Если выбраны фаренгейты, преобразуем температуру
-            double temperatureFahrenheit = temperatureCelsius * 9.0 / 5.0 + 32.0;
-            return String.format("%.2f°F", temperatureFahrenheit);
+            tempInCelsius = transferToFahrenheit(tempInCelsius);
+            temp = String.format("%.2f°F", tempInCelsius);
         } else {
-            return temperatureCelsius + "°C";
+            temp = tempInCelsius + " °C";
         }
+
+        return new WeatherData(city, temp, iconUrl);
     }
 
-    private String generateRandomIconUrl() {
-        // TODO: Сделать, что если меньше какого-то градуса, то зимняя картинка
-        // Здесь вы бы подключались к API сервиса погоды для получения реальной иконки.
-        // Для примера, мы будем использовать одну изображение.
+    private String getIconUrlByCity(String city) {
+        //return "https://i.postimg.cc/C1VdnTJB/image.png";
+        /*String url = "https://www.googleapis.com/customsearch/v1?"
+                + "cx=e42f66d78edf54903"
+                + "key=AIzaSyCPKMJriwQQ4KqY7rfek8k5H0X2aSYWl-Y"
+                + "q=" + city
+                + "searchType=image";
+        JSONObject out = new JSONObject(getDataByUrl(url));
+        JSONObject obj = out.getJSONObject("main");
+        System.out.print(obj);*/
+
         return "https://i.postimg.cc/C1VdnTJB/image.png";
     }
 
-    private String getData(String dataUrl) {
+    private Double getTempByCity(String city) {
+        String url = "http://api.openweathermap.org/data/2.5/weather?q="
+                + city
+                + "&appid=614674e366d17b482963b1fd4aef410b&units=metric";
+        JSONObject out = new JSONObject(getDataByUrl(url));
+        JSONObject obj = out.getJSONObject("main");
+
+        return obj.getDouble("temp");
+    }
+
+    private String getDataByUrl(String dataUrl) {
         StringBuffer data = new StringBuffer();
 
         try {
@@ -53,9 +62,12 @@ public class WeatherService {
             }
             bufferedReader.close();
         } catch(Exception e) {
-            System.out.println("Такой город был не найден!");
+            System.out.println("Ошибка запроса!");
         }
         return data.toString();
     }
 
+    private Double transferToFahrenheit(Double temp) {
+        return temp * 9.0 / 5.0 + 32.0;
+    }
 }

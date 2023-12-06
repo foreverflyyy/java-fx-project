@@ -8,7 +8,7 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) {
         WeatherApp weatherApp = new WeatherApp();
-        Scene scene = new Scene(weatherApp.getMainPane(), 400, 200);
+        Scene scene = new Scene(weatherApp.getMainPane(), 600, 400);
 
         stage.setTitle("Онлайн-погода");
         stage.setScene(scene);
