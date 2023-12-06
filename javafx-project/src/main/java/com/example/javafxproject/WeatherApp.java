@@ -31,8 +31,13 @@ public class WeatherApp {
         getWeatherButton.setOnAction(e -> {
             String city = cityField.getText();
             String unit = getSelectedUnit(unitBox);
-            WeatherData weatherData = weatherService.getWeather(city, unit);
-            updateWeatherInfo(weatherData);
+            try {
+                WeatherData weatherData = weatherService.getWeather(city, unit);
+                updateWeatherInfo(weatherData);
+            }
+            catch(Exception a) {
+                resultLabel.setText("Такой город был не найден!");
+            }
         });
 
         pane.getChildren().addAll(cityLabel, cityField, unitBox, getWeatherButton, resultLabel, weatherIcon);

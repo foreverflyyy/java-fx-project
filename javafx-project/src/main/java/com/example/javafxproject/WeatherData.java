@@ -4,10 +4,10 @@ import java.util.Random;
 
 public class WeatherData {
     private String city;
-    private String temperature;
+    private Double temperature;
     private String iconUrl;
 
-    public WeatherData(String city, String temperature, String iconUrl) {
+    public WeatherData(String city, Double temperature, String iconUrl) {
         this.city = city;
         this.temperature = temperature;
         this.iconUrl = iconUrl;
@@ -17,7 +17,7 @@ public class WeatherData {
         return city;
     }
 
-    public String getTemperature() {
+    public Double getTemperature() {
         return temperature;
     }
 

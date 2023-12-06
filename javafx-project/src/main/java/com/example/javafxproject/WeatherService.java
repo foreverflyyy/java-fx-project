@@ -1,13 +1,20 @@
 package com.example.javafxproject;
-
 import java.util.Random;
+import java.net.URL;
+import java.net.URLConnection;
+import javafx.fxml.FXML;
+import org.json.JSONObject;
+import java.util.ResourceBundle;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 
 public class WeatherService {
     public WeatherData getWeather(String city, String unit) {
-        // Здесь в реальном приложении вы бы делали запрос к сервису погоды,
-        // чтобы получить актуальные данные. Но для примера, мы будем генерировать случайные данные.
-        String temperature = generateRandomTemperature(unit);
+        JSONObject out= new JSONObject(getData("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=614674e366d17b482963b1fd4aef410b&units=metric"));
         String iconUrl = generateRandomIconUrl();
+        JSONObject obj = out.getJSONObject("main");
+        Double temperature = obj.getDouble("temp");
         return new WeatherData(city, temperature, iconUrl);
     }
 
@@ -30,4 +37,25 @@ public class WeatherService {
         // Для примера, мы будем использовать одну изображение.
         return "https://i.postimg.cc/C1VdnTJB/image.png";
     }
+
+    private String getData(String dataUrl) {
+        StringBuffer data = new StringBuffer();
+
+        try {
+            URL url = new URL(dataUrl);
+            URLConnection urlConn = url.openConnection();
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+            String line;
+
+            while((line = bufferedReader.readLine()) != null) {
+                data.append(line + "\n");
+            }
+            bufferedReader.close();
+        } catch(Exception e) {
+            System.out.println("Такой город был не найден!");
+        }
+        return data.toString();
+    }
+
 }
