@@ -81,6 +81,9 @@ public class WeatherApp {
         resultLabel.setText("Текущая погода в " + weatherData.getCity() +
                 " (" + timeOfDay + "): " + weatherData.getTemperature());
         weatherIcon.setImage(new Image(weatherData.getIconUrl()));
+
+        String backImageUrl = weatherData.getBackgroundUrl();
+        mainPane.setStyle("-fx-background-image: url('" + backImageUrl + "'); -fx-background-size: cover;");
     }
 
     public VBox getMainPane() {
