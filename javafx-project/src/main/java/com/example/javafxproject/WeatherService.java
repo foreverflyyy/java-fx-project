@@ -59,15 +59,15 @@ public class WeatherService {
         String backgroundUrl = "";
 
         if (temp < -20)
-            backgroundUrl = "https://i.postimg.cc/GmDYtRJg/hermit-nikolai-gromov.jpg";
+            backgroundUrl = "https://i.postimg.cc/QtnWSGV9/hermit-nikolai-gromov.jpg";
         else if (temp < -5)
-            backgroundUrl = "https://i.postimg.cc/8PmgSJxZ/orig.jpg";
+            backgroundUrl = "https://i.postimg.cc/VspCC832/orig.jpg";
         else if (temp < 5)
-            backgroundUrl = "https://i.postimg.cc/TwgHJB6t/0ba3450bc4a6132d572d5f8d947368b359fe67d1.jpg";
+            backgroundUrl = "https://i.postimg.cc/jSQwmJLr/0ba3450bc4a6132d572d5f8d947368b359fe67d1.jpg";
         else if (temp < 15)
-            backgroundUrl = "https://i.postimg.cc/vH2FTFHn/1645997370-49-vsegda-pomnim-com-p-priblizhenie-dozhdya-foto-53.jpg";
+            backgroundUrl = "https://i.postimg.cc/PJQPLP0j/1645997370-49-vsegda-pomnim-com-p-priblizhenie-dozhdya-foto-53.jpg";
         else
-            backgroundUrl = "https://i.postimg.cc/fLDg5BRZ/original.jpg";
+            backgroundUrl = "https://i.postimg.cc/PqfshNQD/original.jpg";
 
         return backgroundUrl;
     }
