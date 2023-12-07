@@ -10,6 +10,7 @@ public class HelloApplication extends Application {
         WeatherApp weatherApp = new WeatherApp();
         Scene scene = new Scene(weatherApp.getMainPane(), 800, 600);
 
+        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         stage.setTitle("Онлайн-погода");
         stage.setScene(scene);
         stage.show();

@@ -57,6 +57,7 @@ public class WeatherApp {
 
         Label cityLabel = new Label("Город:");
         TextField cityField = new TextField();
+        cityField.getStyleClass().add("text-field");
 
         HBox unitBox = createUnitToggleGroup();
 
@@ -186,6 +187,12 @@ public class WeatherApp {
     }
 
     private void logRequest(String city, String unit) {
+        boolean isCity = city != null && !city.trim().isEmpty();
+        boolean isUnit = unit != null && !unit.trim().isEmpty();
+        if (!isCity || !isUnit) {
+            return;
+        }
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOG_FILE_PATH, true))) {
             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
             writer.write(timestamp + " - Запрос погоды для города: " + city + ", температура: " + unit);
