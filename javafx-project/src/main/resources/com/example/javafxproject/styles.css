@@ -110,3 +110,8 @@
 .text-field .text-input {
     -fx-text-fill: #2c3e50;
 }
+
+
+.right-align {
+    -fx-alignment: center-right;
+}

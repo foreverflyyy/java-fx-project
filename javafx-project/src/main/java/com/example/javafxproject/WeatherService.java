@@ -6,6 +6,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Date;
 
 
 public class WeatherService {
@@ -15,6 +21,16 @@ public class WeatherService {
                 + "&appid=614674e366d17b482963b1fd4aef410b&units=metric";
         JSONObject out = new JSONObject(getDataByUrl(url));
         JSONObject obj = out.getJSONObject("main");
+        JSONObject sun = out.getJSONObject("sys");
+        long sunrise = sun.getLong("sunrise");
+        long sunset = sun.getLong("sunset");
+        int timezone = out.getInt("timezone");
+        ZoneOffset zoneOffset = ZoneOffset.ofTotalSeconds(timezone);
+        ZoneId zoneId = ZoneId.ofOffset("UTC", zoneOffset);
+        LocalDateTime sunriseTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(sunrise), zoneId);
+        LocalDateTime sunsetTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(sunset), zoneId);
+
+
         JSONArray needArr = out.getJSONArray("weather");
         JSONObject subObj = needArr.getJSONObject(0);
 
@@ -24,6 +40,8 @@ public class WeatherService {
         String iconId = subObj.getString("icon");
         String iconUrl = "http://openweathermap.org/img/w/" + iconId + ".png";
 
+        String sunUrl = getSunImageByTime(sunriseTime, sunsetTime, zoneId);
+
         String temp;
         if ("imperial".equals(unit)) {
             tempInCelsius = transferToFahrenheit(tempInCelsius);
@@ -32,7 +50,7 @@ public class WeatherService {
             temp = tempInCelsius + " °C";
         }
 
-        return new WeatherData(city, temp, iconUrl, backgroundUrl);
+        return new WeatherData(city, temp, iconUrl, backgroundUrl, sunUrl);
     }
 
     private String getDataByUrl(String dataUrl) {
@@ -73,6 +91,24 @@ public class WeatherService {
     }
 
     private Double transferToFahrenheit(Double temp) {
+
         return temp * 9.0 / 5.0 + 32.0;
+    }
+
+    private String getSunImageByTime(LocalDateTime sunriseTime, LocalDateTime sunsetTime, ZoneId zoneId)
+    {
+        LocalDateTime currentTime = LocalDateTime.now(zoneId);
+        if (currentTime.isBefore(sunriseTime)) {
+            return "https://i.postimg.cc/y6wZNvC0/sunrise-6744778.png";
+        }
+        else if (currentTime.isAfter(sunsetTime.minusHours(1)) && currentTime.isBefore(sunsetTime) ) {
+            return "https://i.postimg.cc/Twtrnb7s/sunset-1622198.png";
+        }
+        else if(currentTime.isAfter(sunsetTime)) {
+            return "https://i.postimg.cc/GtpBFhHh/moon-1812660.png";
+        }
+        else {
+           return "https://i.postimg.cc/L6XxQ9jf/sun-4480566.png";
+        }
     }
 }

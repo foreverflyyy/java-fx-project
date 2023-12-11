@@ -27,6 +27,7 @@ public class WeatherApp {
     private final VBox mainPane;
     private final Label resultLabel = new Label();
     private final ImageView weatherIcon = new ImageView();
+    private final ImageView sun = new ImageView();
     private final ComboBox<String> timeOfDayComboBox;
     private ToggleGroup unitToggleGroup;
     private final List<WeatherData> history = new ArrayList<>();
@@ -55,6 +56,7 @@ public class WeatherApp {
         VBox pane = new VBox(10);
         pane.setPadding(new Insets(20));
 
+
         Label cityLabel = new Label("Город:");
         TextField cityField = new TextField();
         cityField.getStyleClass().add("text-field");
@@ -73,8 +75,9 @@ public class WeatherApp {
                 resultLabel.setText("Такой город не был найден!");
             }
         });
+        sun.getStyleClass().add("right-align");
 
-        pane.getChildren().addAll(cityLabel, cityField, unitBox, timeOfDayComboBox, getWeatherButton, resultLabel, weatherIcon);
+        pane.getChildren().addAll(cityLabel, cityField, unitBox, timeOfDayComboBox, getWeatherButton, resultLabel, weatherIcon, sun);
         return pane;
     }
 
@@ -136,6 +139,8 @@ public class WeatherApp {
         resultLabel.setText("Текущая погода в " + weatherData.getCity() +
                 " (" + timeOfDay + "): " + weatherData.getTemperature());
         weatherIcon.setImage(new Image(weatherData.getIconUrl()));
+        sun.setImage(new Image(weatherData.getSunUrl()));
+
 
         String backImageUrl = weatherData.getBackgroundUrl();
         mainPane.setStyle("-fx-background-image: url('" + backImageUrl + "'); -fx-background-size: cover;");
@@ -204,6 +209,7 @@ public class WeatherApp {
     }
 
     public VBox getMainPane() {
+
         return mainPane;
     }
 }
