@@ -46,6 +46,7 @@ public class WeatherApp {
         timeIntervalComboBox = createTimeIntervalComboBox();
         mainPane.getChildren().add(timeIntervalComboBox);
 
+
         saveHistoryButton = createButton("Сохранить историю", this::saveHistoryToFile);
         logRequestButton = createButton("Логировать запрос", () -> logRequest(weatherData.getCity(), weatherData.getTemperature()));
 

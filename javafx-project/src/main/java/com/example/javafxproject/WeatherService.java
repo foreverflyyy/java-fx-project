@@ -1,17 +1,17 @@
 package com.example.javafxproject;
 import java.net.URL;
 import java.net.URLConnection;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.Date;
+import java.net.InetAddress;
 
 
 public class WeatherService {
@@ -48,6 +48,15 @@ public class WeatherService {
             temp = String.format("%.2f°F", tempInCelsius);
         } else {
             temp = tempInCelsius + " °C";
+        }
+
+
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            System.out.println("IP Address : " + localHost.getHostAddress());
+            System.out.println("Host Name : " + localHost.getHostName());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return new WeatherData(city, temp, iconUrl, backgroundUrl, sunUrl);
