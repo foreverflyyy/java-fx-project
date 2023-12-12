@@ -1,6 +1,7 @@
 package com.example.javafxproject;
 
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class WeatherApp {
+public class WeatherScene extends Scene {
     private final WeatherService weatherService;
     private WeatherData weatherData;
     private final VBox mainPane;
@@ -37,15 +38,21 @@ public class WeatherApp {
     private final Button logRequestButton;
     private static final String LOG_FILE_PATH = "weather_log.txt";
 
-    public WeatherApp() {
+    public WeatherScene() {
+        super(new VBox(), 800, 600);
+
         this.weatherService = new WeatherService();
         this.timeOfDayComboBox = createTimeOfDayComboBox();
-        this.mainPane = createMainPane();
+        this.mainPane = (VBox) getRoot();
+
+        mainPane.getChildren().add(createMainPane());
 
         initTempGraphic();
         timeIntervalComboBox = createTimeIntervalComboBox();
         mainPane.getChildren().add(timeIntervalComboBox);
 
+        Button goToTextInfoButton = createButton("Перейти к TextInfoScene", this::goToTextInfoScene);
+        mainPane.getChildren().add(goToTextInfoButton);
 
         saveHistoryButton = createButton("Сохранить историю", this::saveHistoryToFile);
         logRequestButton = createButton("Логировать запрос", () -> logRequest(weatherData.getCity(), weatherData.getTemperature()));
@@ -56,7 +63,6 @@ public class WeatherApp {
     private VBox createMainPane() {
         VBox pane = new VBox(10);
         pane.setPadding(new Insets(20));
-
 
         Label cityLabel = new Label("Город:");
         TextField cityField = new TextField();
@@ -88,6 +94,13 @@ public class WeatherApp {
         temperatureChart = new LineChart<>(xAxis, yAxis);
         temperatureChart.setTitle("График температуры");
         mainPane.getChildren().add(temperatureChart);
+    }
+
+    private void goToTextInfoScene() {
+        TextInfoScene textInfoScene = new TextInfoScene();
+        textInfoScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+        Stage stage = (Stage) mainPane.getScene().getWindow();
+        stage.setScene(textInfoScene);
     }
 
     private Button createButton(String text, Runnable action) {
@@ -210,7 +223,16 @@ public class WeatherApp {
     }
 
     public VBox getMainPane() {
-
         return mainPane;
+    }
+
+    public Tab getWeatherTab() {
+        Tab tab = new Tab("Погода");
+        tab.setContent(mainPane);
+        return tab;
+    }
+
+    public static Scene createScene() {
+        return new WeatherScene();
     }
 }

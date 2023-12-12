@@ -5,15 +5,27 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class HelloApplication extends Application {
+    private Stage stage;
+
     @Override
     public void start(Stage stage) {
-        WeatherApp weatherApp = new WeatherApp();
-        Scene scene = new Scene(weatherApp.getMainPane(), 800, 600);
+        this.stage = stage;
+        showWeatherScene();
 
+        this.stage.setTitle("Онлайн-погода");
+        this.stage.show();
+    }
+
+    private void showWeatherScene() {
+        Scene scene = WeatherScene.createScene();
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-        stage.setTitle("Онлайн-погода");
         stage.setScene(scene);
-        stage.show();
+    }
+
+    private void showTextInfoScene() {
+        Scene scene = TextInfoScene.createScene();
+        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+        stage.setScene(scene);
     }
 
     public static void main(String[] args) {
