@@ -1,70 +1,31 @@
 package com.example.javafxproject;
 
-import javafx.geometry.Insets;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class TextInfoScene extends Scene {
+    private final HelloApplication helloApplication;
 
-    private final VBox mainPane;
-    private final TextArea textArea;
+    public TextInfoScene(String fxmlPath, HelloApplication helloApplication) {
+        super(new VBox(), 1000, 800);
+        this.helloApplication = helloApplication;
 
-    public TextInfoScene() {
-        super(new VBox(), 800, 600);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
+        fxmlLoader.setController(new TextInfoController(helloApplication));
 
-        this.mainPane = (VBox) getRoot();
-        this.textArea = createTextArea();
-
-        mainPane.getChildren().addAll(createMainPane(), textArea);
+        try {
+            Parent root = fxmlLoader.load();
+            setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private VBox createMainPane() {
-        VBox pane = new VBox(10);
-        pane.setPadding(new Insets(20));
-
-        Label titleLabel = new Label("Текстовая информация");
-        titleLabel.getStyleClass().add("title-label");
-
-        Button goToWeatherButton = createButton("Вернуться к WeatherScene", () -> goToWeatherScene());
-
-        pane.getChildren().addAll(titleLabel, goToWeatherButton);
-        return pane;
-    }
-
-    private TextArea createTextArea() {
-        TextArea area = new TextArea();
-        area.setPromptText("Введите текстовую информацию здесь...");
-        area.setPrefRowCount(10);
-        area.setPrefColumnCount(40);
-        return area;
-    }
-
-    private void goToWeatherScene() {
-        WeatherScene weatherScene = new WeatherScene();
-        weatherScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-        Stage stage = (Stage) mainPane.getScene().getWindow();
-        stage.setScene(weatherScene);
-    }
-
-    private Button createButton(String text, Runnable action) {
-        Button button = new Button(text);
-        button.setOnAction(e -> action.run());
-        return button;
-    }
-
-    public VBox getMainPane() {
-        return mainPane;
-    }
-
-    public Tab getTextInfoTab() {
-        Tab tab = new Tab("Текстовая информация");
-        tab.setContent(mainPane);
-        return tab;
-    }
-
-    public static Scene createScene() {
-        return new TextInfoScene();
+    public static Scene createScene(HelloApplication helloApplication) {
+        return new TextInfoScene("/com/example/javafxproject/textFieldScene.fxml", helloApplication);
     }
 }

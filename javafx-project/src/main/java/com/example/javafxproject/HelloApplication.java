@@ -17,14 +17,12 @@ public class HelloApplication extends Application {
     }
 
     private void showWeatherScene() {
-        Scene scene = WeatherScene.createScene();
-        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-        stage.setScene(scene);
+        WeatherScene weatherScene = new WeatherScene(this);
+        weatherScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+        stage.setScene(weatherScene);
     }
 
-    private void showTextInfoScene() {
-        Scene scene = TextInfoScene.createScene();
-        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+    public void setScene(Scene scene) {
         stage.setScene(scene);
     }
 

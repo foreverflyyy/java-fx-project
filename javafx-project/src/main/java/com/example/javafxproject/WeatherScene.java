@@ -1,6 +1,8 @@
 package com.example.javafxproject;
 
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -37,9 +39,11 @@ public class WeatherScene extends Scene {
     private final Button saveHistoryButton;
     private final Button logRequestButton;
     private static final String LOG_FILE_PATH = "weather_log.txt";
+    private final HelloApplication helloApplication;
 
-    public WeatherScene() {
-        super(new VBox(), 800, 600);
+    public WeatherScene(HelloApplication helloApplication) {
+        super(new VBox(), 1000, 800);
+        this.helloApplication = helloApplication;
 
         this.weatherService = new WeatherService();
         this.timeOfDayComboBox = createTimeOfDayComboBox();
@@ -51,7 +55,8 @@ public class WeatherScene extends Scene {
         timeIntervalComboBox = createTimeIntervalComboBox();
         mainPane.getChildren().add(timeIntervalComboBox);
 
-        Button goToTextInfoButton = createButton("Перейти к TextInfoScene", this::goToTextInfoScene);
+        Button goToTextInfoButton = createButton("Перейти к заполнению формы пользователя", this::goToTextInfoScene);
+        goToTextInfoButton.setStyle("-fx-start-margin: 10");
         mainPane.getChildren().add(goToTextInfoButton);
 
         saveHistoryButton = createButton("Сохранить историю", this::saveHistoryToFile);
@@ -97,10 +102,16 @@ public class WeatherScene extends Scene {
     }
 
     private void goToTextInfoScene() {
-        TextInfoScene textInfoScene = new TextInfoScene();
-        textInfoScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-        Stage stage = (Stage) mainPane.getScene().getWindow();
-        stage.setScene(textInfoScene);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("textFieldScene.fxml"));
+        TextInfoController controller = new TextInfoController(helloApplication);
+        loader.setController(controller);
+        try {
+            Scene textInfoScene = new Scene(loader.load(), 1000, 800);
+            textInfoScene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+            helloApplication.setScene(textInfoScene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private Button createButton(String text, Runnable action) {
@@ -232,7 +243,7 @@ public class WeatherScene extends Scene {
         return tab;
     }
 
-    public static Scene createScene() {
-        return new WeatherScene();
+    public Scene createScene() {
+        return new WeatherScene(helloApplication);
     }
 }
